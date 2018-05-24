@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "com.fuzamei.mapperInterface.ServerMapper">
+
+    <select id="findServer" parameterType="com.fuzamei.entity.Server" resultType="com.fuzamei.entity.Server">
+        select
+        *
+        from
+        server
+        <where>
+       		is_delete = 0
+	        <if test="serverName!='' and serverName != null">
+	        	and server_name = #{serverName}
+	        </if>
+        </where>
+        order by
+        server_id
+        limit #{start},#{end}
+    </select>
+    
+      <select id="findServerCount" parameterType="com.fuzamei.entity.Server" resultType="Integer">
+        select
+        count(*)
+        from
+        server
+        <where>
+       		is_delete = 0
+	        <if test="serverName!='' and serverName != null">
+	        	and server_name = #{serverName}
+	        </if>
+        </where>
+        order by
+        server_id
+        limit #{start},#{end}
+    </select>
+    
+    <select id="findProjectByServerId" parameterType="Integer" resultType="com.fuzamei.entity.Project">
+    	select 
+    		p.*
+    	from
+    		project_server ps,project p
+    	where 
+    		ps.server_id = #{serverId}
+    	and
+    		p.project_id = ps.project_id
+    	and
+    		ps.is_monitor = 1
+    </select>
+
+	<insert id="addServer" parameterType="com.fuzamei.entity.Server">
+		insert into
+			server
+			(server_name,company,out_ip,in_ip,description,server_purpose_id,is_delete,state)
+		values
+			(#{serverName},#{company},#{outIp},#{inIp},#{description},#{serverPurposeId},0,1)
+	</insert>
+	
+	<update id="deleteServer" parameterType="Integer">
+		update
+			server
+		set
+			is_delete = 1
+		where
+			server_id = #{serverId}
+	</update>
+	
+	<select id="findAllServerPurpose" resultType="com.fuzamei.entity.ServerPurpose">
+		select
+			*
+		from
+			server_purpose
+	</select>
+	
+	<select id="findServerName" resultType="Integer">
+		select 
+			count(*)
+		from
+			server
+		where 
+			server_name = #{serverName}
+	</select>
+	
+	<update id="updateServer" parameterType="com.fuzamei.entity.Server">
+		update
+			server
+		<set>
+			<if test="serverName!=null and serverName!=''">
+				server_name = #{serverName},
+			</if>
+			<if test="company!=null and company!=''">
+				company = #{company},
+			</if>
+			<if test="outIp!=null and outIp!=''">
+				out_ip = #{outIp},
+			</if>
+			<if test="inIp!=null and inIp!=''">
+				in_ip = #{inIp},
+			</if>
+			<if test="description!=null and description!=''">
+				description = #{description},
+			</if>
+			<if test="serverPurposeId!=null and serverPurposeId!=''">
+				server_purpose_id = #{serverPurposeId},
+			</if>
+		</set>
+		where
+			server_id = #{serverId}
+	</update>
+</mapper>

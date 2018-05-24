@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fuzamei.mapperInterface.ServerPurposeMapper">
+  <insert id="insertServerPurpose" parameterType="com.fuzamei.entity.ServerPurpose">
+	insert 
+	into server_purpose (server_purpose_id,context)
+    values ( #{serverPurposeId}, #{context})
+    </insert>
+<delete id="deleteById" parameterType="java.lang.Integer">
+    delete 
+    from server_purpose
+    where server_purpose_id = #{serverPurposeId}
+  </delete>
+  <select id="selectById" resultType="com.fuzamei.entity.ServerPurpose">
+    SELECT server_purpose_id,context
+    FROM  server_purpose
+    WHERE server_purpose_id = #{serverPurposeId}
+  </select> 
+    <select id="selectAll" resultType="com.fuzamei.entity.ServerPurpose">
+    SELECT server_purpose_id,context
+    FROM  server_purpose
+  </select> 
+  <update id="updateServerPurpose" parameterType="com.fuzamei.entity.PojoServerPurpose">
+    update server_purpose
+    <set>
+      <if test="newId != null">
+        server_purpose_id = #{newId},
+      </if>
+      <if test="context != null">
+        context = #{context},
+      </if>
+    </set>
+    where server_purpose_id = #{serverPurposeId}
+  </update>
+</mapper>

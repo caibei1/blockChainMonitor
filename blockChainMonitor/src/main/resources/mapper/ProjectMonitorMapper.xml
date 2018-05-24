@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fuzamei.mapperInterface.ProjectMonitorMapperInterface">
+	<select id="getProjectList" resultType="com.fuzamei.entity.Project">
+		SELECT * FROM `project`
+	</select>
+	<select id="getProjectIdInMonitorList" resultType="int">
+		SELECT DISTINCT p.project_id
+		FROM project p
+		LEFT JOIN project_server ps
+		ON ps.project_id = p.project_id
+		WHERE ps.is_monitor = 1
+	</select>
+	
+</mapper>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fuzamei.mapperInterface.ExceptionLogMapper">
+  <insert id="insertAppLog" parameterType="com.fuzamei.entity.ExceptionLog">
+    insert into exception_log (project_id,application_id,context)
+    values ( #{projectId}, #{applicationId},#{context})
+    </insert>
+    <update id="updateExceptionState" parameterType="com.fuzamei.entity.ExceptionLog">
+    update exception_log
+    <set>
+      <if test="state != null">
+        state = #{state},
+      </if>
+    </set>
+    where id = #{id}
+  </update>
+</mapper>

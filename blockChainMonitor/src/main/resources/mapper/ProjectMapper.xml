@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "com.fuzamei.mapperInterface.ProjectMapper">
+<insert id="insertProject" useGeneratedKeys="true" keyProperty="projectId" parameterType="com.fuzamei.entity.Project">
+	insert into
+	project(project_name,
+			description,
+			company,
+			version,
+			state,
+			is_online)
+	values(
+			#{projectName},
+			#{description},
+			#{company},
+			#{version},
+			#{state},
+			#{isOnline})
+</insert>
+
+<select id="findProjectIdByName" parameterType="String" resultType="int">
+	select project_id
+	from project
+	where project_name = #{projectName}
+</select>
+<select id="findAllServer" parameterType="int" resultType="String">
+	select server_name
+	from server
+	where server_purpose_id=#{serverPurposeId}
+</select>
+<select id="findServerIdByName" parameterType="String" resultType="int">
+	select server_id
+	from server
+	where server_name = #{serverName}
+</select>
+<select id="findUserByName" parameterType="String" resultType="int">
+        select u.user_id
+        from user u
+        where username=#{userName} 
+</select>
+<insert id="insertProjectNodeServer" parameterType="com.fuzamei.entity.ProjectServer">
+	insert into
+	project_server(
+					server_id,
+					project_id,
+					port,
+					is_monitor)
+	values
+
+	(	#{serverId},
+		#{projectId},
+		#{port},
+		#{isMonitor})
+</insert>
+<insert id="insertProjectApplictionServer" parameterType="com.fuzamei.entity.Application">
+	insert into
+	application(
+				project_id,
+				url,
+				port,
+				description,
+				server_id,
+				is_monitor)
+	values
+		(
+		#{projectId},
+		#{url},
+		#{port},
+		#{description},
+		#{serverId},
+		#{isMonitor})
+					
+</insert>
+<insert id="insertProjectManager" parameterType="com.fuzamei.entity.UserProject">
+	insert into
+	user_project(
+				user_id,
+				project_id)
+	values
+	(
+		#{userId},
+		#{projectId})
+</insert>
+
+<insert id="insertHistoryHeight">
+insert into
+history_height(
+				server_id,
+				project_id,
+				height,
+				update_time)
+	values
+	(
+				#{serverId},
+				#{projectId},
+				#{height},
+				#{updateTime})
+
+</insert>
+<select id="queryException" parameterType="com.fuzamei.entity.ExceptionLogVO" resultType="com.fuzamei.entity.ExceptionLog">
+select *
+from exception_log
+limit #{startPage},#{rowNum}
+</select>
+
+<select id="queryExceptionCount" parameterType="com.fuzamei.entity.ExceptionLogVO" resultType="int">
+select count(*)
+from exception_log
+</select>
+</mapper>

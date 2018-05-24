@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fuzamei.mapperInterface.ExceptionMapperInterface">
+	<select id="getExceptionLogList" resultType="com.fuzamei.entity.ExceptionInfo">
+		SELECT e.id,e.project_id,e.server_id,e.create_time,e.update_time,e.update_time FROM exception_log AS e
+	</select>
+	<select id="getExceptionLogListMore" parameterType="com.fuzamei.entity.ExceptionInfo" resultType="com.fuzamei.entity.ExceptionInfo">
+		SELECT e.id,e.port,e.project_id,e.server_id,e.create_time,e.update_time,e.state,p.project_name,p.description 
+		FROM exception_log AS e 
+		LEFT JOIN project AS p 
+		ON p.project_id = e.project_id 
+		LEFT JOIN server AS s 
+		ON s.server_id = e.server_id
+		WHERE e.id = #{id}
+	</select>
+	<select id="getExceptionListByProjectId" parameterType="com.fuzamei.entity.ExceptionInfo" resultType="com.fuzamei.entity.ExceptionLog">
+		SELECT * FROM exception_log 
+		WHERE exception_log.project_id = #{projectId} AND exception_log.state = 0
+	</select>
+	
+	<update id="updateExceptionLogState" parameterType="com.fuzamei.entity.ExceptionLog">
+		UPDATE exception_log SET state = #{state} 
+		WHERE project_id = #{projectId} AND server_id = #{serverId} AND port = #{port}
+	</update>
+	
+	<update id="updateProjectState" parameterType="com.fuzamei.entity.Project">
+		UPDATE project SET state = #{state} WHERE project_id = #{projectId}
+	</update>
+	
+	<update id="updateProjectServerState" parameterType="com.fuzamei.entity.ProjectServer">
+		UPDATE project_server SET status = #{status} WHERE project_id = #{projectId} AND server_id = #{serverId}
+	</update>
+	
+</mapper>

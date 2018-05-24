@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "com.fuzamei.mapperInterface.TestMapper">
+
+    <select id="queryAnswer" resultType="Answer">
+        SELECT
+        a.name,
+        MAX(
+            CASE a.t2name
+            WHEN 's1' THEN
+                a.count
+                    ELSE
+                0
+            END
+        ) s1,
+        MAX(
+            CASE a.t2name
+            WHEN 's2' THEN
+                a.count
+                    ELSE
+                0
+            END
+        ) s2,
+        MAX(
+            CASE a.t2name
+            WHEN 's3' THEN
+                a.count
+                    ELSE
+                0
+            END
+        ) s3
+    FROM(SELECT t1.name,t3.coun AS count,t2.`name` AS t2name
+    FROM t3
+    LEFT JOIN t1
+    ON t3.t1id = t1.id
+    LEFT JOIN t2
+    ON t3.t2id = t2.id) AS a
+    GROUP BY
+        a.name
+    </select>
+
+</mapper>

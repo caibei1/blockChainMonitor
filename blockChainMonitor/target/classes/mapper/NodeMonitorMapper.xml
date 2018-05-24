@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fuzamei.mapperInterface.NodeMonitorMapperInterface">
+	<select id="getServerInfo" resultType="com.fuzamei.entity.ServerByProject">
+		SELECT p.project_id,p.max_height,p.min_height,ps.port,s.out_ip,s.server_id,ps.is_monitor,ps.status
+		FROM project p
+		LEFT JOIN project_server ps
+		ON ps.project_id = p.project_id
+		LEFT JOIN server s
+		ON s.server_id = ps.server_id
+		WHERE s.state = 1
+		AND ps.is_monitor = 1
+		AND s.is_delete = 0
+	</select>
+	
+	<select id="getTimeHistoryHeightListByServerId" parameterType="com.fuzamei.entity.HistoryHeight" resultType="com.fuzamei.entity.HistoryHeight">
+		SELECT * FROM history_height WHERE server_id = #{serverId} AND project_id = #{projectId}
+	</select>
+	
+	<select id="getMinTimeHistoryHeight" parameterType="com.fuzamei.entity.HistoryHeight" resultType="com.fuzamei.entity.HistoryHeight">
+		SELECT * FROM history_height WHERE server_id = #{serverId} AND project_id = #{projectId} ORDER BY update_time LIMIT 1 
+	</select>
+	
+	<update id="updateHistoryHeight" parameterType="com.fuzamei.entity.HistoryHeight">
+		UPDATE history_height SET height = #{height} WHERE id = #{id} AND server_id = #{serverId}
+	</update>
+	
+	<insert id="insertHistoryHeight" parameterType="com.fuzamei.entity.HistoryHeight">
+		INSERT INTO history_height(server_id,project_id,height,update_time)
+		VALUES (#{serverId},#{projectId},#{height},#{updateTime})
+	</insert>
+	
+	<select id="getProjectInfo" parameterType="com.fuzamei.entity.ServerByProject" resultType="com.fuzamei.entity.Project">
+		SELECT * FROM project WHERE project_id = #{projectId}
+	</select>
+	
+	<update id="updateChainStatus" parameterType="com.fuzamei.entity.ServerByProject">
+		UPDATE project_server 
+		<set>
+			<if test="status != null">
+			 	status = #{status} ,
+			</if>
+			<if test="isMonitor != null">
+				is_monitor = #{isMonitor},
+			</if>
+		</set>
+		
+		WHERE server_id = #{serverId} AND project_id = #{projectId}
+	</update>
+	
+	<update id="updateProjectState" parameterType="com.fuzamei.entity.Project">
+		UPDATE project SET state = #{state} WHERE project_id = #{projectId}
+	</update>
+	
+	<insert id="insertNodeException" parameterType="com.fuzamei.entity.ServerByProject">
+		INSERT INTO exception_log (project_id,server_id,port,state,context)
+		VALUES (#{projectId},#{serverId},#{port},#{state},#{context})
+	</insert>
+	
+	<select id="getExceptionLogList" parameterType="com.fuzamei.entity.ExceptionLog" resultType="com.fuzamei.entity.ExceptionLog">
+		SELECT * FROM exception_log WHERE project_id = #{projectId} AND server_id = #{serverId} AND state = 0
+	</select>
+	
+	<select id="getChainByProjectId" parameterType="com.fuzamei.entity.ExceptionInfo" resultType="com.fuzamei.entity.ProjectServer">
+		SELECT * FROM project_server WHERE project_id = #{projectId}
+	</select>
+	
+	<select id="getServerInfoByServerId" parameterType="com.fuzamei.entity.ServerByProject" resultType="com.fuzamei.entity.Server">
+		SELECT * FROM server WHERE server_id = #{serverId}
+	</select>
+	
+</mapper>

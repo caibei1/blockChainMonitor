@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fuzamei.mapperInterface.ApplicationMapper">
+  <insert id="insertApplication" parameterType="com.fuzamei.entity.Application">
+	insert into application (project_id,url,port,description,ip,server_id)
+    values ( #{projectId}, #{url},#{port},#{description},#{ip},#{serverId})
+    </insert>
+<delete id="deleteByApplicationId" parameterType="java.lang.Integer">
+    delete from application
+    where application_id = #{applicationId}
+  </delete>
+  <update id="updateAppMonitor" parameterType="com.fuzamei.entity.Application">
+    update application
+    <set>
+      <if test="ismonitor != null">
+        is_monitor = #{isMonitor},
+      </if>
+    </set>
+    where application_id = #{applicationId}
+  </update>
+    <update id="updateAppState" parameterType="com.fuzamei.entity.Application">
+    update application
+    <set>
+      <if test="status != null">
+        status = #{status},
+      </if>
+    </set>
+    where application_id = #{applicationId}
+  </update>
+    <select id="selectByProjectId" resultType="com.fuzamei.entity.Application">
+    SELECT *
+    FROM  application
+    WHERE project_id = #{projectId}
+  </select> 
+    <select id="selectAppStatus" resultType="com.fuzamei.entity.Application">
+    SELECT port,description,status
+    FROM  application
+    WHERE project_id = #{projectId}
+  </select> 
+     <select id="selectForMonitor" resultType="com.fuzamei.entity.Application">
+    SELECT *
+    FROM  application
+    WHERE project_id = #{projectId} AND status=1
+  </select> 
+  <select id="selectByApplicationId" resultType="com.fuzamei.entity.Application">
+    SELECT url,port,description
+    FROM  application
+    WHERE application_id = #{applicationId}
+  </select> 
+  <update id="updateApplication" parameterType="com.fuzamei.entity.Application">
+    update application
+    <set>
+      <if test="url != null">
+        url = #{url},
+      </if>
+      <if test="description != null">
+        description = #{description},
+      </if>
+      <if test="port != null">
+        port = #{port}
+      </if>
+    </set>
+    where application_id = #{applicationId}
+  </update>
+</mapper>
